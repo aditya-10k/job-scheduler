@@ -1,0 +1,75 @@
+spring:
+  application:
+    name: distributed-job-scheduler
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/jobscheduler}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        format_sql: true
+    show-sql: false
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        acks: all
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.job.scheduler.dto
+            value:
+              default:
+                type: com.job.scheduler.dto.JobExecutionMessage
+    listener:
+      ack-mode: record
+      missing-topics-fatal: false
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+app:
+  kafka:
+    topic: ${APP_KAFKA_TOPIC:job-execution}
+    consumer-group: ${APP_KAFKA_CONSUMER_GROUP:job-workers}
+  scheduler:
+    enabled: ${APP_SCHEDULER_ENABLED:true}
+    batch-size: ${APP_SCHEDULER_BATCH_SIZE:25}
+    poll-interval-ms: ${APP_SCHEDULER_POLL_INTERVAL_MS:1000}
+  outbox:
+    enabled: ${APP_OUTBOX_ENABLED:true}
+    batch-size: ${APP_OUTBOX_BATCH_SIZE:25}
+    publish-interval-ms: ${APP_OUTBOX_PUBLISH_INTERVAL_MS:1000}
+  retry:
+    default-max-retries: ${APP_RETRY_DEFAULT_MAX_RETRIES:3}
+    initial-delay: ${APP_RETRY_INITIAL_DELAY:PT1S}
+    multiplier: ${APP_RETRY_MULTIPLIER:2.0}
+    max-delay: ${APP_RETRY_MAX_DELAY:PT30S}
+  worker:
+    enabled: ${APP_WORKER_ENABLED:true}
+    lease-duration: ${APP_WORKER_LEASE_DURATION:PT30S}
+    lease-recovery-interval-ms: ${APP_WORKER_LEASE_RECOVERY_INTERVAL_MS:5000}
+    instance-id: ${APP_WORKER_INSTANCE_ID:${spring.application.name}-${random.uuid}}
