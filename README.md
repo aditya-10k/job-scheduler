@@ -1,3 +1,5 @@
+(ps : the documentation is done by ai , coding is done by yours truely(lil help frm gpt ;)) )
+
 # Distributed Job Scheduler
 
 This repository contains two different versions of a Job Scheduler implementation, demonstrating the evolution from a simple in-memory, single-node design to a production-grade, fault-tolerant distributed system.
@@ -6,7 +8,6 @@ This repository contains two different versions of a Job Scheduler implementatio
 
 The project is structured into three branches:
 
-*   **`main`**: The default branch, containing this documentation.
 *   **`version1`**: A simple, multi-threaded in-memory Job Scheduler console application. This represents the Low-Level Design (LLD) foundation of scheduling and prioritizing jobs on a single node.
 *   **`version2`**: A fully functional, production-style Distributed Job Scheduler built using Java, Spring Boot, PostgreSQL, Kafka, and Docker. It is designed to handle multiple scheduler and worker instances concurrently, ensuring fault tolerance, reliability, and high scalability.
 
