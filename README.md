@@ -1,3 +1,4 @@
+(ps : the documentation is done by ai , coding is done by yours truely(lil help frm gpt ;)) )
 # Distributed Job Scheduler (Version 2)
 
 A production-style, fault-tolerant **Distributed Job Scheduler** built using Java, Spring Boot 3.x, PostgreSQL, Apache Kafka, and Docker.
